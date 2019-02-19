@@ -1,0 +1,50 @@
+#!usr/env/python
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.decomposition import PCA
+#import os
+
+def PCA_fig(dataframe_path)
+#1.data deal
+  df1 = pd.read_excel(dataframe_path, index_col='Geneid') #excel file
+
+  #2.PCA, need PCA function in scikit-learn module
+  from sklearn.decomposition import PCA
+  pca = PCA(n_components = 2)    #选择方差95%的占比
+  # pca.fit(df1.T)   #主城分析时每一行是一个输入数据
+  # result = pca.transform(df1.T)  #计算结果
+  result = pca.fit_transform(df1.T) #there is also one step making it
+
+  #3.PCA_figure
+  #3.1 make data type into dataframe
+  x_label = 'PC1(%s%%)' % round((pca.explained_variance_ratio_[0]*100.0),2)   #x axis label
+  y_label = 'PC2(%s%%)' % round((pca.explained_variance_ratio_[1]*100.0),2)   #y axis label
+  df_pca = pd.DataFrame(result, index=['Con','Con','Con','Cr','Cr','Cr','CrSe','CrSe','CrSe','Se','Se','Se'], columns=[x_label, y_label])
+  df_pca["Samples"] = df1.columns
+
+  #3.2 fig
+  sns.set(style="white")
+  sns.set_style("ticks", {"xtick.major.size":8,
+                         "ytick.major.size":8})  #set tick
+  sns.set_context({'axes.labelsize': 12.0,  'lines.markersize': 9}) #set markersize
+  %matplotlib inline
+  #Set up the matplotlib figure
+  f, ax = plt.subplots(figsize=(6, 8))
+  sns.scatterplot(x=df_pca.columns[0], y=df_pca.columns[1], hue=df_pca.index, data=df_pca, style=df_pca.index, markers=True)
+  for i in range(result[:,0].size):
+      plt.text(result[i,0],result[i,1]-30,list(df_pca.Samples)[i], verticalalignment='center', horizontalalignment='center') #在每个点边上绘制数据名称
+  #gcf :get current fig
+  fig=plt.gcf()
+  fig.savefig("CR_sample_PCA.pdf")
+
+def main():
+  PCA_fig(dataframe_path)
+  
+if __name__ == '__main__':
+  main()
+  
+  
+#can accept command line parameter by argparse module
