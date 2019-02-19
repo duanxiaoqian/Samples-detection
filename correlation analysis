@@ -1,0 +1,27 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+
+def cor_heatmap(reads_dataframe):
+  #1.导入数据
+  df1 = pd.read_excel(reads_dataframe, index_col='Geneid')
+
+  #2.相关性分析
+  df_corr = df1.corr()
+
+  #3.画图headmap
+  #%matplotlib inline
+  sns.set(style="white")
+  # Set up the matplotlib figure
+  f, ax = plt.subplots(figsize=(11, 9))
+  sns.heatmap(df_corr,cmap='viridis', linewidths=.5, cbar_kws={"shrink": .5}, annot=True, fmt=".3f")
+  #gcf: Get Current Figure
+  fig=plt.gcf()
+  fig.savefig("CR_sample_cor.pdf")
+  
+def main():
+  cor_heatmap(reads_dataframe) #need path of reads matrix file
+  
+if __name__ == __"main"__ :
+  main()
